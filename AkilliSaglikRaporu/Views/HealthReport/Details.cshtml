@@ -1,0 +1,95 @@
+@model AkilliSaglikRaporu.Models.HealthReport
+
+@{
+    ViewData["Title"] = "Rapor Detayları";
+}
+
+<div class="container">
+    <h2>Rapor Detayları</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>@Model.Title</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.Description)</div>
+                        <div class="col-md-9">@Html.DisplayFor(model => model.Description)</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.UploadDate)</div>
+                        <div class="col-md-9">@Model.UploadDate.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.IpfsHash)</div>
+                        <div class="col-md-9">
+                            <code>@Model.IpfsHash</code>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.UserAddress)</div>
+                        <div class="col-md-9">
+                            <code>@Model.UserAddress</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Share" asp-route-id="@Model.Id" class="btn btn-success">
+                        <i class="fas fa-share-alt"></i> Doktor ile Paylaş
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Listeye Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5>Paylaşım Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Shares.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var share in Model.Shares)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="d-block text-muted">Doktor Adresi:</small>
+                                        <code class="d-block text-truncate" style="max-width: 200px;">@share.DoctorAddress</code>
+                                        <small class="d-block text-muted mt-1">Bitiş Tarihi: @share.ExpiryDate.ToString("dd.MM.yyyy")</small>
+                                    </div>
+                                    @if (share.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Süresi Doldu</span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Bu rapor henüz hiçbir doktor ile paylaşılmamış.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

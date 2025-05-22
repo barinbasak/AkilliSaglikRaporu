@@ -1,0 +1,231 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<section class="hero bg-light py-5 rounded-3 shadow-sm mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 pe-lg-5">
+            <h1 class="display-4 fw-bold mb-4 text-gradient">Akıllı Sağlık Raporu Paylaşımı</h1>
+            <p class="lead mb-4">
+                Blockchain ve IPFS teknolojileri ile <span class="fw-semibold">güvenli</span>, <span class="fw-semibold">merkeziyetsiz</span> ve <span class="fw-semibold">zaman kısıtlı</span> sağlık raporu paylaşım sistemi.
+            </p>
+            <div class="d-grid gap-3 d-md-flex justify-content-md-start mb-4">
+                <a asp-controller="HealthReport" asp-action="Create" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="fas fa-upload me-2"></i> Rapor Yükle
+                </a>
+                <a asp-controller="HealthReport" asp-action="ViewAsDoctor" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-user-md me-2"></i> Doktor Erişimi
+                </a>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="status-dot status-dot-success"></div>
+                <small class="text-muted">Blockchain Bağlantısı Aktif</small>
+            </div>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0">
+            <div class="position-relative">
+                <div class="bg-primary opacity-10 position-absolute top-0 end-0 bottom-0 start-0 rounded-4 transform-skew"></div>
+                <img src="~/sagliklogo.png" class="img-fluid rounded-4 shadow p-3 bg-white" alt="Sağlık Raporu İllüstrasyonu" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features mb-5">
+    <h2 class="text-center mb-4">Özellikler</h2>
+    <div class="row g-4 py-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-4 p-3 rounded">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Güvenli Depolama</h3>
+                    <p class="card-text flex-grow-1">Sağlık raporlarınız IPFS üzerinde güvenli bir şekilde depolanır ve sadece izin verdiğiniz kişiler erişebilir.</p>
+                    <a href="#" class="text-decoration-none text-primary fw-semibold">
+                        Daha fazla bilgi <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-4 p-3 rounded">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Kontrollü Paylaşım</h3>
+                    <p class="card-text flex-grow-1">Raporlarınızı belirli doktorlarla, belirli bir süre için paylaşabilirsiniz. Süre dolduğunda erişim otomatik olarak sonlanır.</p>
+                    <a href="#" class="text-decoration-none text-primary fw-semibold">
+                        Daha fazla bilgi <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-4 p-3 rounded">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">Blockchain Güvencesi</h3>
+                    <p class="card-text flex-grow-1">Ethereum blockchain üzerinde çalışan akıllı kontratlar sayesinde paylaşım kuralları değiştirilemez ve güvenilir bir şekilde uygulanır.</p>
+                    <a href="#" class="text-decoration-none text-primary fw-semibold">
+                        Daha fazla bilgi <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works bg-light p-4 rounded-3 mb-5">
+    <div class="text-center mb-4">
+        <h2 class="mb-3">Nasıl Çalışır?</h2>
+        <p class="lead text-muted">Dört kolay adımda güvenli rapor paylaşımı</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="timeline">
+                <div class="row g-0">
+                    <div class="col-md-6 text-end pe-md-4 mb-4 mb-md-0">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold">1</span>
+                                    </div>
+                                    <i class="fas fa-wallet fs-2 text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold">MetaMask Bağlantısı</h5>
+                                <p class="mb-0">Ethereum cüzdanınızla sisteme bağlanın ve kimliğinizi güvenli bir şekilde doğrulayın.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold">2</span>
+                                    </div>
+                                    <i class="fas fa-cloud-upload-alt fs-2 text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold">Rapor Yükleme</h5>
+                                <p class="mb-0">Sağlık raporunuzu sisteme yükleyin. Rapor IPFS'e yüklenir ve referansı blockchain'e kaydedilir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-0">
+                    <div class="col-md-6 text-end pe-md-4 mb-4 mb-md-0">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold">3</span>
+                                    </div>
+                                    <i class="fas fa-share-alt fs-2 text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold">Doktor ile Paylaşım</h5>
+                                <p class="mb-0">Doktorun Ethereum adresini ve erişim süresini belirleyerek raporunuzu güvenle paylaşın.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="step-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold">4</span>
+                                    </div>
+                                    <i class="fas fa-user-md fs-2 text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold">Doktor Erişimi</h5>
+                                <p class="mb-0">Doktor kendi Ethereum adresiyle sisteme giriş yaparak kendisiyle paylaşılan raporlara erişebilir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta bg-gradient text-white p-5 rounded-3 shadow mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h2 class="mb-3">Hemen Başlayın</h2>
+            <p class="mb-4">Sağlık raporlarınızı güvenle paylaşmak için Akıllı Sağlık Raporu sistemini kullanmaya başlayın.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            <a asp-controller="HealthReport" asp-action="Create" class="btn btn-light btn-lg">
+                <i class="fas fa-upload me-2"></i> İlk Raporunuzu Yükleyin
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animasyonlu giriş efektleri
+            const fadeElements = document.querySelectorAll('.card, .hero, .features, .how-it-works, .cta');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElements.forEach((element) => {
+                observer.observe(element);
+            });
+        });
+    </script>
+    
+    <style>
+        /* Özel stil tanımlamaları */
+        .text-gradient {
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .transform-skew {
+            transform: rotate(-3deg);
+        }
+        
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: var(--border-color);
+            transform: translateX(-50%);
+        }
+        
+         media (max-width: 767.98px) {
+            .timeline::before {
+                left: 20px;
+            }
+        }
+    </style>
+}

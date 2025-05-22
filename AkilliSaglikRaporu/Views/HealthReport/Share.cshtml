@@ -1,0 +1,96 @@
+@model AkilliSaglikRaporu.Models.HealthReportShareViewModel
+
+@{
+    ViewData["Title"] = "Raporu Paylaş";
+}
+
+<div class="container">
+    <h2>Raporu Doktor ile Paylaş</h2>
+    <hr />
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Share">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="HealthReportId" />
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="DoctorAddress" class="control-label"></label>
+                            <input asp-for="DoctorAddress" class="form-control" placeholder="0x..." />
+                            <span asp-validation-for="DoctorAddress" class="text-danger"></span>
+                            <small class="form-text text-muted">Doktorun Ethereum cüzdan adresini giriniz.</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="ExpiryDate" class="control-label"></label>
+                            <input asp-for="ExpiryDate" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                            <small class="form-text text-muted">Bu tarihten sonra doktor rapora erişemeyecektir.</small>
+                        </div>
+                        
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-success" id="share-button">
+                                <i class="fas fa-share-alt"></i> Paylaş
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.HealthReportId" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Vazgeç
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-info-circle"></i> Bilgi
+                </div>
+                <div class="card-body">
+                    <p>Raporunuzu paylaşmak için:</p>
+                    <ol>
+                        <li>Doktorun Ethereum adresini girin</li>
+                        <li>Erişim süresini belirleyin</li>
+                        <li>"Paylaş" butonuna tıklayın</li>
+                    </ol>
+                    <p>İşlem blockchain üzerinde gerçekleşeceği için MetaMask onayı gerekecektir.</p>
+                    <div id="metamask-status" class="alert alert-warning">
+                        MetaMask bağlantısı kontrol ediliyor...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // MetaMask bağlantısını kontrol et
+        window.addEventListener('load', async () => {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // MetaMask'tan hesapları iste
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    
+                    // MetaMask durum bilgisini güncelle
+                    document.getElementById('metamask-status').className = 'alert alert-success';
+                    document.getElementById('metamask-status').textContent = 'MetaMask bağlantısı başarılı!';
+                    
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('metamask-status').className = 'alert alert-danger';
+                    document.getElementById('metamask-status').textContent = 'MetaMask hesabınıza erişim izni verilmedi!';
+                    document.getElementById('share-button').disabled = true;
+                }
+            } else {
+                document.getElementById('metamask-status').className = 'alert alert-danger';
+                document.getElementById('metamask-status').textContent = 'MetaMask yüklü değil! Lütfen MetaMask eklentisini yükleyin.';
+                document.getElementById('share-button').disabled = true;
+            }
+        });
+    </script>
+} 

@@ -1,0 +1,367 @@
+@model AkilliSaglikRaporu.Models.HealthReportViewModel
+
+@{
+    ViewData["Title"] = "Yeni Sağlık Raporu Yükle";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h2 mb-0 text-gray-800">Yeni Sağlık Raporu Yükle</h1>
+        <p class="text-muted mt-1">Raporunuzu IPFS'e yükleyin ve blockchain üzerinde referansını kaydedin</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center">
+        <i class="fas fa-arrow-left me-2"></i> Raporlara Dön
+    </a>
+</div>
+    
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0 py-2">Rapor Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" enctype="multipart/form-data" id="reportForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="Title" class="form-label fw-semibold">Rapor Başlığı</label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Kan Tahlili, MR Sonucu vb." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Rapor hakkında kısa açıklama yazabilirsiniz..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="ReportFile" class="form-label fw-semibold">Rapor Dosyası</label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-card p-5 bg-light rounded text-center" id="dropZone">
+                                <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+                                <h5 class="mt-3">Dosya Seçin veya Sürükleyin</h5>
+                                <p class="text-muted mb-4 small">İzin verilen dosya türleri: PDF, JPG, PNG, DOC, DOCX (Maks. 10MB)</p>
+                                <input asp-for="ReportFile" type="file" id="fileInput" class="d-none" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                                <button type="button" class="btn btn-outline-primary px-4" id="browseBtn">
+                                    <i class="fas fa-search me-2"></i> Dosya Seç
+                                </button>
+                            </div>
+                            <div class="selected-file mt-3 bg-light rounded p-3 d-none" id="selectedFile">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-file-alt text-primary me-3 fs-4"></i>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0 fw-semibold text-truncate" id="fileName">dosya.pdf</p>
+                                        <small class="text-muted" id="fileSize">0 KB</small>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" id="removeFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <span asp-validation-for="ReportFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="UserAddress" class="form-label fw-semibold">Ethereum Adresiniz</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-wallet text-primary"></i>
+                            </span>
+                            <input asp-for="UserAddress" class="form-control" readonly id="ethereum-address" />
+                        </div>
+                        <small class="form-text text-muted">Bu adres MetaMask'tan otomatik olarak alınacaktır.</small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2 mt-5">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submit-button" disabled>
+                            <i class="fas fa-upload me-2"></i> Raporu Yükle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <h5 class="mb-0 py-2">MetaMask Durumu</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="metamask-status" class="alert alert-warning">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <div>
+                            MetaMask bağlantısı kontrol ediliyor...
+                        </div>
+                    </div>
+                </div>
+                <div class="metamask-loading d-none" id="metamask-loading">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                    <small class="d-block text-center mt-2">MetaMask bağlanıyor...</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0 py-2">Nasıl Çalışır</h5>
+            </div>
+            <div class="card-body">
+                <div class="steps">
+                    <div class="step d-flex mb-3">
+                        <div class="step-number bg-primary text-white rounded-circle me-3">1</div>
+                        <div>
+                            <h6 class="mb-1">Dosya Seçin</h6>
+                            <p class="text-muted small mb-0">Yüklemek istediğiniz sağlık raporunuzu seçin.</p>
+                        </div>
+                    </div>
+                    <div class="step d-flex mb-3">
+                        <div class="step-number bg-primary text-white rounded-circle me-3">2</div>
+                        <div>
+                            <h6 class="mb-1">IPFS'e Yükleyin</h6>
+                            <p class="text-muted small mb-0">Dosyanız güvenli şekilde IPFS'e yüklenir.</p>
+                        </div>
+                    </div>
+                    <div class="step d-flex">
+                        <div class="step-number bg-primary text-white rounded-circle me-3">3</div>
+                        <div>
+                            <h6 class="mb-1">Blockchain'e Kaydedin</h6>
+                            <p class="text-muted small mb-0">MetaMask işlemi onaylayarak blockchain'e kaydeder.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <p class="text-muted small mb-0">
+                    <i class="fas fa-shield-alt text-primary me-1"></i>
+                    Tüm veriler şifrelenir ve IPFS üzerinde dağıtık olarak saklanır.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Dosya yükleme işlemleri
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const selectedFile = document.getElementById('selectedFile');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFile = document.getElementById('removeFile');
+        
+        // Dosya seçme butonu
+        browseBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Dosya seçildiğinde
+        fileInput.addEventListener('change', () => {
+            displayFile(fileInput.files[0]);
+        });
+        
+        // Drag & Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropZone.classList.add('border', 'border-primary');
+        }
+        
+        function unhighlight() {
+            dropZone.classList.remove('border', 'border-primary');
+        }
+        
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                displayFile(files[0]);
+            }
+        }
+        
+        // Dosya bilgilerini göster
+        function displayFile(file) {
+            if (!file) return;
+            
+            const fileTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'];
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!fileTypes.includes(fileExt)) {
+                alert('Desteklenmeyen dosya türü. Lütfen PDF, JPG, PNG veya DOC dosyası yükleyin.');
+                return;
+            }
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            selectedFile.classList.remove('d-none');
+            
+            // Icon seçimi
+            let fileIcon = 'fa-file';
+            if (fileExt === '.pdf') fileIcon = 'fa-file-pdf';
+            else if (['.jpg', '.jpeg', '.png'].includes(fileExt)) fileIcon = 'fa-file-image';
+            else if (['.doc', '.docx'].includes(fileExt)) fileIcon = 'fa-file-word';
+            
+            document.querySelector('#selectedFile i').className = `fas ${fileIcon} text-primary me-3 fs-4`;
+        }
+        
+        // Dosya boyutu formatla
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Dosyayı kaldır
+        removeFile.addEventListener('click', () => {
+            fileInput.value = '';
+            selectedFile.classList.add('d-none');
+        });
+        
+        // MetaMask bağlantısını kontrol et
+        window.addEventListener('load', async () => {
+            const metamaskStatus = document.getElementById('metamask-status');
+            const metamaskLoading = document.getElementById('metamask-loading');
+            const submitButton = document.getElementById('submit-button');
+            
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // MetaMask yüklü, bekleme durumunu göster
+                    metamaskStatus.className = 'alert alert-info';
+                    metamaskStatus.innerHTML = `
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div>
+                                MetaMask bulundu. Bağlantı bekleniyor...
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Yükleme animasyonunu göster
+                    metamaskLoading.classList.remove('d-none');
+                    
+                    // MetaMask'tan hesapları iste
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    const account = accounts[0];
+                    
+                    // Ethereum adresini forma yerleştir
+                    document.getElementById('ethereum-address').value = account;
+                    
+                    // MetaMask durum bilgisini güncelle
+                    metamaskStatus.className = 'alert alert-success';
+                    metamaskStatus.innerHTML = `
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <strong>MetaMask bağlantısı başarılı!</strong><br>
+                                <small class="text-truncate d-inline-block" style="max-width: 220px;">${account}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Submit butonunu aktif et
+                    submitButton.disabled = false;
+                    
+                    // Yükleme animasyonunu gizle
+                    metamaskLoading.classList.add('d-none');
+                    
+                } catch (error) {
+                    console.error(error);
+                    metamaskStatus.className = 'alert alert-danger';
+                    metamaskStatus.innerHTML = `
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div>
+                                <strong>Bağlantı hatası!</strong><br>
+                                MetaMask hesabınıza erişim izni verilmedi!
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Yükleme animasyonunu gizle
+                    metamaskLoading.classList.add('d-none');
+                }
+            } else {
+                metamaskStatus.className = 'alert alert-danger';
+                metamaskStatus.innerHTML = `
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <strong>MetaMask bulunamadı!</strong><br>
+                            Lütfen <a href="https://metamask.io/download/" target="_blank">MetaMask eklentisini</a> yükleyin.
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+    
+    <style>
+        .file-upload-card {
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-card:hover {
+            border-color: var(--primary-color);
+            background-color: #e9f2ff !important;
+        }
+        
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+    </style>
+} 
